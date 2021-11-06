@@ -1,0 +1,75 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForAllPageTypes" access="global">
+    <!-- ATTRIBUTE-->
+    <aura:attribute name="parentState" type="Map" required="true" />
+
+    <aura:attribute
+        name="ownState"
+        type="Map"
+        default="{
+            tableTitle:'',
+            iconName:'',
+            numberOfRecordsForTitle:'',
+            isCreatable:false,
+            hasRecords:false,
+            isLoading:true,
+            showBody: false
+        }"
+    />
+
+    <aura:attribute
+        name="childState"
+        type="Map"
+        default="{
+            recordId: '',
+            currentRecordId: '',
+            relationForeignkeyField: '',
+            sobjectApiName: '',
+            relatedFieldApiName: '',
+            sortedBy: '',
+            numberOfRecords: 0,
+            sortedDirection: 'ASC',
+            customActions: [],
+            columns: [],
+            fields: '',
+            parentRelationshipApiName: '',
+            tileFormat: false
+        }"
+    />
+
+    <!-- HANDLER -->
+    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
+    <aura:handler name="fetchDataEvent" event="c:GenericRelatedListFetchDataEvent" action="{!c.handleFetchDataEvent}" />
+    <!-- EVENTS-->
+
+    <!-- LIBRARIES -->
+    <lightning:navigation aura:id="navigationService" />
+
+    <!-- MARKUP -->
+    <div class="c-container">
+        <lightning:card class="slds-card_boundary card-related-list" iconName="{!v.ownState.iconName}">
+            <aura:set attribute="actions">
+                <aura:if isTrue="{! v.ownState.isCreatable }">
+                    <lightning:button label="Nuevo" onclick="{!c.handleCreateRecord}" />
+                </aura:if>
+            </aura:set>
+
+            <aura:set attribute="title">
+                <b>
+                    <a class="slds-card__header-link slds-var-p-vertical_xx-large" onclick="{!c.handleGotoRelatedList}">
+                        {!(v.ownState.tableTitle) + ' (' + (v.ownState.numberOfRecordsForTitle) + ')'}
+                    </a>
+                </b>
+            </aura:set>
+
+            <aura:set attribute="footer">
+                <aura:if isTrue="{! and(v.ownState.hasRecords,!v.ownState.isLoading)}">
+                    <a onclick="{!c.handleGotoRelatedList}">Mostrar Todos</a>
+                </aura:if>
+            </aura:set>
+
+            <aura:if isTrue="{! v.ownState.showBody}">
+                <c:GenericRelatedListBody state="{! v.childState}" />
+            </aura:if>
+        </lightning:card>
+    </div>
+</aura:component>

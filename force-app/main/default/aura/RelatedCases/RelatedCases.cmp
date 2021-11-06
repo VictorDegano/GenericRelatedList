@@ -1,0 +1,44 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <!-- ATTRIBUTE -->
+    <aura:attribute
+        name="state"
+        type="Map"
+        default="{
+            isLoaded: false,
+            parentRelationshipApiName:'Cases',
+            relatedFieldApiName: 'AccountId',
+            currentRecordId: null,
+            sortedDirection: 'DESC, ASC',
+            numberOfRecords: 3,
+            sobjectApiName: 'Case',
+            customActions: [],
+            tableTitle: 'Other Cases',
+            tileFormat: false,
+            iconName: 'standard:case',
+            sortedBy: 'CreatedDate, Status',
+            columns: [],
+            recordId: null,
+            fields: 'Id, CaseNumber, Status, Type, CreatedDate',
+            relationForeignkeyField: null
+        }"
+    />
+    <!-- We keep this attributes for avoid strange behavoir -->
+    <aura:attribute name="recordId" type="String" default="" description="Record Identifier" />
+    <aura:attribute name="caseRecord" type="Object" />
+
+    <!-- HANDLER -->
+    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
+    <aura:handler name="change" value="{!v.caseRecord}" action="{!c.loadData}" />
+
+    <!-- MARKUP -->
+    <force:recordData
+        aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="AccountId, SuppliedEmail"
+        targetFields="{!v.caseRecord}"
+    />
+
+    <aura:if isTrue="{! v.state.isLoaded }">
+        <c:GenericRelatedList parentState="{#v.state}" />
+    </aura:if>
+</aura:component>

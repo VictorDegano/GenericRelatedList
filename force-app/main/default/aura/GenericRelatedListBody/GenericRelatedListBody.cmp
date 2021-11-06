@@ -1,0 +1,151 @@
+<aura:component controller="GenericRelatedListController">
+    <!-- ATTRIBUTE -->
+    <aura:attribute
+        name="state"
+        type="Map"
+        default="{
+            parentRelationshipApiName: '',
+            relationForeignkeyField: '',
+            relatedFieldApiName: '',
+            currentRecordId: '',
+            numberOfRecords: 0,
+            sortedDirection: '',
+            sobjectApiName: '',
+            customActions: [],
+            tileFormat: false,
+            tableTitle: '',
+            sortedBy: '',
+            recordId: null,
+            iconName:'',
+            columns:[],
+            fields: ''
+        }"
+    />
+
+    <aura:attribute
+        name="privateState"
+        type="Map"
+        default="{
+            columnsWithActions: [],
+            records: null,
+            numberOfRecordsForTitle: '',
+            sobjectLabel: '',
+            isCreatable: false,
+            isDeletable: false,
+            isUpdatable: false,
+            isLoading: true,
+            hasRecords: false,
+            onRowActionHandler: null,
+            tileBody: null
+        }"
+        access="private"
+    />
+
+    <!-- HANDLER -->
+    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
+    <aura:handler name="change" value="{!v.privateState.columns}" action="{! c.handleColumnsChange }" />
+    <aura:handler event="force:showToast" action="{!c.handleToastEvent}" />
+
+    <!-- EVENTS-->
+    <aura:registerEvent name="fetchDataEvent" type="c:GenericRelatedListFetchDataEvent" />
+
+    <!-- LIBRARIES -->
+    <lightning:navigation aura:id="navigationService" />
+    <lightning:overlayLibrary aura:id="overlayLib" />
+
+    <!-- MARKUP -->
+    <aura:if isTrue="{! v.privateState.isLoading }">
+        <lightning:spinner clase="slds-align_absolute-center" alternativeText="Cargando" size="small" />
+        <aura:set attribute="else">
+            <aura:if isTrue="{! v.privateState.hasRecords }">
+                <aura:if isTrue="{! ! v.state.tileFormat }">
+                    <lightning:datatable
+                        class="related-list"
+                        columns="{! v.privateState.columnsWithActions }"
+                        data="{! v.privateState.records }"
+                        keyField="id"
+                        onrowaction="{! c.handleRowAction }"
+                        hideCheckboxColumn="true"
+                        resizeColumnDisabled="true"
+                    />
+                    <aura:set attribute="else">
+                        <!-- {! v.tileBody} -->
+                        <div class="slds-grid slds-wrap slds-var-p-around_medium">
+                            <aura:iteration items="{! v.privateState.records }" var="record">
+                                <lightning:layout
+                                    verticalAlign="strech"
+                                    horizontalAlign="spread"
+                                    class="slds-var-m-vertical_xx-small slds-size_1-of-1"
+                                >
+                                    <lightning:layoutItem size="11">
+                                        <a id="{!record.Id}" href="#" onclick="{!c.handleGoToRecord}"
+                                            >{!record.CaseNumber}</a
+                                        >
+                                        <dl class="slds-dl_horizontal">
+                                            <dt class="slds-dl_horizontal__label">
+                                                <p class="slds-truncate" title="Motivo">Motivo:</p>
+                                            </dt>
+                                            <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                                <p class="slds-truncate" title="{!record.Motivo__c}">{!record.Motivo__c}</p>
+                                            </dd>
+                                            <dt class="slds-dl_horizontal__label">
+                                                <p class="slds-truncate" title="Estado">Estado:</p>
+                                            </dt>
+                                            <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                                <p class="slds-truncate" title="{!record.Status}">{!record.Status}</p>
+                                            </dd>
+                                            <dt class="slds-dl_horizontal__label">
+                                                <p class="slds-truncate" title="Fecha">Fecha:</p>
+                                            </dt>
+                                            <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                                <p class="slds-truncate" title="{!record.CreatedDate}">
+                                                    <lightning:formattedDateTime
+                                                        value="{!record.CreatedDate}"
+                                                        year="numeric"
+                                                        month="numeric"
+                                                        day="numeric"
+                                                        hour="2-digit"
+                                                        minute="2-digit"
+                                                        hour12="false"
+                                                    />
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1">
+                                        <lightning:buttonMenu
+                                            iconSize="x-small"
+                                            menuAlignment="right"
+                                            disabled="{! !or(v.privateState.isDeletable,v.privateState.isUpdatable) }"
+                                            value="{! record}"
+                                            alternativeText="Show menu"
+                                            class="slds-button_last"
+                                            onselect="{! c.handleTileAction }"
+                                        >
+                                            <lightning:menuItem
+                                                disabled="{! !v.privateState.isUpdatable}"
+                                                value="edit"
+                                                title="Modificar"
+                                                label="Modificar"
+                                            />
+                                            <lightning:menuItem
+                                                disabled="{! !v.privateState.isDeletable}"
+                                                value="delete"
+                                                title="Borrar"
+                                                label="Borrar"
+                                            />
+                                        </lightning:buttonMenu>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </aura:iteration>
+                        </div>
+                    </aura:set>
+                </aura:if>
+
+                <aura:set attribute="else">
+                    <div class="slds-grid slds-wrap slds-var-m-around_medium">Sin Casos para mostrar.</div>
+                </aura:set>
+            </aura:if>
+        </aura:set>
+    </aura:if>
+</aura:component>

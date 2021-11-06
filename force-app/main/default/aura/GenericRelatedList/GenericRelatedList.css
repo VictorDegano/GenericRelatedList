@@ -1,0 +1,44 @@
+.THIS .slds-button_icon-bare {
+    display: none;
+}
+.THIS .related-list th:first-child lightning-formatted-url a {
+    border-bottom: 1px dotted;
+}
+.THIS .related-list .slds-scrollable_x {
+    overflow-y: visible;
+    overflow-x: visible;
+}
+.THIS .related-list .slds-scrollable_y {
+    overflow-y: visible;
+    overflow-x: visible;
+}
+
+.THIS .slds-card__header {
+    background: #f3f2f2;
+    margin-bottom: unset;
+    padding: var(--lwc-varSpacingVerticalMedium,1rem) var(--lwc-varSpacingHorizontalMedium,1rem);
+}
+
+.THIS .slds-card__body {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.THIS .slds-card__footer {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.THIS a span {
+    color: rgba(27, 82, 151, 1);
+}
+.THIS .slds-scrollable_y {
+    width: 100% !important;
+}
+.THIS .slds-table_header-fixed {
+    width: 100% !important;
+}
+.THIS .modal-header .slds-modal__header {
+    font-size: 1.5em;
+    font-weight: bold;
+}

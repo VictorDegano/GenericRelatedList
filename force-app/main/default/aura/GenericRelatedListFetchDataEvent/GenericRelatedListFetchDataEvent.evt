@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="Event To Pass Data From GenericRelatedListBody Component To GenericRelatedList Component">
+    <aura:attribute name="eventData" type="Object"/>
+</aura:event>
