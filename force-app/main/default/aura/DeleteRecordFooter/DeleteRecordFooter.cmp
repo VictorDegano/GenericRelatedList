@@ -1,0 +1,12 @@
+<aura:component controller="GenericRelatedListController">
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="record" type="Object" required="true" />
+    <aura:attribute name="sobjectLabel" type="String" required="true" />
+
+    <!-- LIBRARIES -->
+    <lightning:overlayLibrary aura:id="overlayLib" />
+
+    <!-- MARKUP -->
+    <lightning:button name="Cancel" label="Cancel" onclick="{!c.handleCancel}" />
+    <lightning:button name="Delete" label="Delete" variant="brand" onclick="{!c.handleDelete}" />
+</aura:component>

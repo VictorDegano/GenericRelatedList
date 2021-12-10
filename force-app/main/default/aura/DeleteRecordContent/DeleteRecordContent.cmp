@@ -1,0 +1,9 @@
+<aura:component >
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="sobjectLabel" type="String" required="true"/>
+
+    <!-- MARKUP -->
+	<div class="slds-align_absolute-center">
+		Are you sure you want to delete the {!v.sobjectLabel}?
+    </div>
+</aura:component>

@@ -1,0 +1,19 @@
+<aura:component>
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="isDeletable" type="Boolean" default="false" />
+    <aura:attribute name="isUpdatable" type="Boolean" default="false" />
+    <aura:attribute name="value" type="object" />
+
+    <!-- MARKUP -->
+    <lightning:buttonMenu
+        iconSize="x-small"
+        menuAlignment="right"
+        disabled="{! !or(v.isDeletable,v.isUpdatable) }"
+        value="{! v.value}"
+        alternativeText="Show menu"
+        class="slds-button_last"
+    >
+        <lightning:menuItem disabled="{! !v.isUpdatable}" value="edit" title="Edit" label="Edit" />
+        <lightning:menuItem disabled="{! !v.isDeletable}" value="delete" title="Delete" label="Delete" />
+    </lightning:buttonMenu>
+</aura:component>
