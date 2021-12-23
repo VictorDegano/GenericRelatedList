@@ -38,7 +38,6 @@
             onRowActionHandler: null,
             tileBody: null
         }"
-        access="private"
     />
 
     <!-- HANDLER -->
@@ -55,7 +54,7 @@
 
     <!-- MARKUP -->
     <aura:if isTrue="{! v.privateState.isLoading }">
-        <lightning:spinner clase="slds-align_absolute-center" alternativeText="Cargando" size="small" />
+        <lightning:spinner clase="slds-align_absolute-center" alternativeText="Loading" size="small" />
         <aura:set attribute="else">
             <aura:if isTrue="{! v.privateState.hasRecords }">
                 <aura:if isTrue="{! ! v.state.tileFormat }">
@@ -125,14 +124,14 @@
                                             <lightning:menuItem
                                                 disabled="{! !v.privateState.isUpdatable}"
                                                 value="edit"
-                                                title="Modificar"
-                                                label="Modificar"
+                                                title="Edit"
+                                                label="Edit"
                                             />
                                             <lightning:menuItem
                                                 disabled="{! !v.privateState.isDeletable}"
                                                 value="delete"
-                                                title="Borrar"
-                                                label="Borrar"
+                                                title="Delete"
+                                                label="Delete"
                                             />
                                         </lightning:buttonMenu>
                                     </lightning:layoutItem>
@@ -143,7 +142,7 @@
                 </aura:if>
 
                 <aura:set attribute="else">
-                    <div class="slds-grid slds-wrap slds-var-m-around_medium">Sin Casos para mostrar.</div>
+                    <div class="slds-grid slds-wrap slds-var-m-around_medium">There aren't records to show.</div>
                 </aura:set>
             </aura:if>
         </aura:set>

@@ -1,9 +1,25 @@
 ({
-    fetchData: function (cmp, event, helper) {
-        let state = cmp.get("v.state");
-        let controllerAction = cmp.get("c.initData");
+    // callbacjResolveMethods: {
+    //     fetchSuccess: function (component, helper, data, state) { helper.handleFetchSucces(component, data, state); },
+    //     fetchError: function (component, helper, errors) { helper.handlerFetchError(component, errors); },
+    // },
+    fetchData: function (component, event, helper) {
+        let state = component.get("v.state");
+        // let controllerAction = component.get("c.initData");
 
-        controllerAction.setParams({
+        // controllerAction.setParams({
+        //     request: {
+        //         relatedFieldApiName: state.relatedFieldApiName,
+        //         numberOfRecords: state.numberOfRecords ? state.numberOfRecords + 1 : state.numberOfRecords,
+        //         sobjectApiName: state.sobjectApiName,
+        //         recordId: state.recordId,
+        //         sortBy: state.sortedBy,
+        //         fields: state.fields,
+        //         sortDirection: state.sortedDirection,
+        //         relationForeignkeyField: state.relationForeignkeyField
+        //     }
+        // });
+        let params = {
             request: {
                 relatedFieldApiName: state.relatedFieldApiName,
                 numberOfRecords: state.numberOfRecords ? state.numberOfRecords + 1 : state.numberOfRecords,
@@ -14,105 +30,117 @@
                 sortDirection: state.sortedDirection,
                 relationForeignkeyField: state.relationForeignkeyField
             }
+        };
+        //const self = this;
+        this.callApexController(component, "initData", params)
+            .then( result => this.handleFetchSuccess(component, result, state))
+            /*.catch( errors => this.handleFetchError(component, errors))*/;
+
+        // controllerAction.setCallback(this, function (response) {
+        //     let calloutState = response.getState();
+        //     if (calloutState === "SUCCESS") {
+                
+        //     } else if (state === "ERROR") {
+                
+        //     }
+        // });
+
+        // $A.enqueueAction(controllerAction);
+    },
+    handleFetchSuccess: function (component, data, state) {
+        // let data = response.getReturnValue();
+        let records = data.records;
+
+        let filteredRecords = records.filter(function (value, index, arr) {
+            return state.currentRecordId !== value.Id;
         });
 
-        controllerAction.setCallback(this, function (response) {
-            let calloutState = response.getState();
-            if (calloutState === "SUCCESS") {
-                let data = response.getReturnValue();
-                let records = data.records;
+        if (
+            state.numberOfRecords &&
+            records.length > state.numberOfRecords &&
+            filteredRecords.length >= records.length
+        ) {
+            filteredRecords.pop();
+        }
+        records = filteredRecords;
 
-                let filteredRecords = records.filter(function (value, index, arr) {
-                    return state.currentRecordId !== value.Id;
-                });
+        let numberOfRecordsTitle =
+            data.recordsSize > state.numberOfRecords
+                ? `${state.numberOfRecords}+`
+                : Math.min(state.numberOfRecords, records.length);
 
-                if (
-                    state.numberOfRecords &&
-                    records.length > state.numberOfRecords &&
-                    filteredRecords.length >= records.length
-                ) {
-                    filteredRecords.pop();
-                }
-                records = filteredRecords;
+        let isCaseObject = 'case' === data.sObjectLabel.toLocaleLowerCase();
+        records.forEach((record) => {
+            record.LinkName = "/" + record.Id;
+            for (const col in record) {
+                const curCol = record[col];
 
-                let numberOfRecordsTitle =
-                    data.recordsSize > state.numberOfRecords
-                        ? `${state.numberOfRecords}+`
-                        : Math.min(state.numberOfRecords, records.length);
-
-                records.forEach((record) => {
-                    record.LinkName = "/" + record.Id;
-                    for (const col in record) {
-                        const curCol = record[col];
-
-                        //we need to flat the object cause the datatable doesn't support complex objects
-                        if (typeof curCol === "object") {
-                            const newVal = curCol.Id ? "/" + curCol.Id : null;
-                            helper.flattenStructure(helper, record, col + "_", curCol);
-                            if (newVal !== null) {
-                                record[col + "_LinkName"] = newVal;
-                            }
-                        }
+                //we need to flat the object cause the datatable doesn't support complex objects
+                if (typeof curCol === "object") {
+                    const newVal = curCol.Id ? "/" + curCol.Id : null;
+                    this.flattenStructure(record, col + "_", curCol);
+                    if (newVal !== null) {
+                        record[col + "_LinkName"] = newVal;
                     }
-                });
-
-                this.setState(cmp, "v.state", {
-                    parentRelationshipApiName: !state.parentRelationshipApiName
-                        ? data.parentRelationshipApiName
-                        : state.parentRelationshipApiName,
-                    tableTitle: !state.tableTitle ? data.sObjectLabelPlural : state.tableTitle,
-                    iconName: !state.iconName ? data.iconName : state.iconName
-                });
-
-                let hasRecords = records.length > 0;
-                this.setState(cmp, "v.privateState", {
-                    records: records,
-                    numberOfRecordsForTitle: numberOfRecordsTitle,
-                    isCreatable: data.isCreatable,
-                    isDeletable: data.isDeletable,
-                    isUpdatable: data.isUpdatable,
-                    isLoading: false,
-                    hasRecords: hasRecords
-                });
-
-                this.initColumnsWithActions(cmp, event, helper);
-
-                let cmpEvent = cmp.getEvent("fetchDataEvent");
-                cmpEvent.setParams({
-                    eventData: {
-                        tableTitle: data.sObjectLabelPlural,
-                        numberOfRecordsForTitle: numberOfRecordsTitle,
-                        iconName: data.iconName,
-                        isCreatable: data.isCreatable,
-                        hasRecords: hasRecords
-                    }
-                });
-                cmpEvent.fire();
-            } else if (state === "ERROR") {
-                let errors = response.getError();
-                if (errors && errors[0] && errors[0].message) {
-                    console.log("Error message: " + errors[0].message);
-                } else {
-                    console.log("Unknown error");
                 }
-                this.setState(cmp, "v.privateState", { isLoading: false });
+
+                if (isCaseObject) {
+                    record["Name"] = record.CaseNumber;
+                }
             }
         });
 
-        $A.enqueueAction(controllerAction);
+        this.setState(component, "v.state", {
+            parentRelationshipApiName: !state.parentRelationshipApiName
+                ? data.parentRelationshipApiName
+                : state.parentRelationshipApiName,
+            tableTitle: !state.tableTitle ? data.sObjectLabelPlural : state.tableTitle,
+            iconName: !state.iconName ? data.iconName : state.iconName
+        });
+
+        let hasRecords = records.length > 0;
+        this.setState(component, "v.privateState", {
+            records: records,
+            numberOfRecordsForTitle: numberOfRecordsTitle,
+            isCreatable: data.isCreatable,
+            isDeletable: data.isDeletable,
+            isUpdatable: data.isUpdatable,
+            isLoading: false,
+            sobjectLabel: data.sObjectLabel,
+            hasRecords: hasRecords
+        });
+
+        this.initColumnsWithActions(component);
+
+        let componentEvent = component.getEvent("fetchDataEvent");
+        componentEvent.setParams({
+            eventData: {
+                tableTitle: data.sObjectLabelPlural,
+                numberOfRecordsForTitle: numberOfRecordsTitle,
+                iconName: data.iconName,
+                isCreatable: data.isCreatable,
+                hasRecords: hasRecords
+            }
+        });
+        componentEvent.fire();
+    },
+    handleFetchError: function (component, errors) {
+        this.toast(5, "¡Error!", "pester", errors, "error", "error");
+    
+        this.setState(component, "v.privateState", { isLoading: false });
     },
     // flat the object to get access to all fields (Datatablerow doesn't accept estructured objects)
-    flattenStructure: function (helper, topObject, prefix, toBeFlattened) {
+    flattenStructure: function (topObject, prefix, toBeFlattened) {
         for (const prop in toBeFlattened) {
             const curVal = toBeFlattened[prop];
             if (typeof curVal === "object") {
-                helper.flattenStructure(helper, topObject, prefix + prop + "_", curVal);
+                this.flattenStructure(topObject, prefix + prop + "_", curVal);
             } else {
                 topObject[prefix + prop] = curVal;
             }
         }
     },
-    initColumnsWithActions: function (cmp, event, helper) {
+    initColumnsWithActions: function (cmp) {
         let privateState = cmp.get("v.privateState");
         let state = cmp.get("v.state");
 
@@ -121,28 +149,24 @@
             customActions = [];
 
             if (privateState.isUpdatable) {
-                customActions.push({ label: "Modificar", name: "edit" });
+                customActions.push({ label: "Edit", name: "Edit" });
             }
 
             if (privateState.isDeletable) {
-                customActions.push({ label: "Borrar", name: "delete" });
+                customActions.push({ label: "Delete", name: "Delete" });
             }
         }
 
-        // let columnsWithActions = [...state.columns,{ type: "action", typeAttributes: { rowActions: customActions } }];
-        // columnsWithActions.push(...state.columns);
-        // columnsWithActions.push({ type: "action", typeAttributes: { rowActions: customActions } });
         this.setState(cmp, "v.privateState", {
             columnsWithActions: [...state.columns, { type: "action", typeAttributes: { rowActions: customActions } }]
         });
-        // cmp.set("v.columnsWithActions", columnsWithActions);
     },
     removeRecord: function (cmp, row) {
         let sobjectLabel = cmp.get("v.privateState.sobjectLabel");
         $A.createComponents(
             [
-                ["c:BorrarRegistroContent", { sobjectLabel: sobjectLabel }],
-                ["c:BorrarRegistroFooter", { record: row, sobjectLabel: sobjectLabel }]
+                ["c:DeleteRecordContent", { sobjectLabel: sobjectLabel }],
+                ["c:DeleteRecordFooter", { record: row, sobjectLabel: sobjectLabel }]
             ],
             function (components, status, errorMessage) {
                 if (status === "SUCCESS") {
@@ -177,6 +201,7 @@
                 break;
         }
     },
+    //Tile Format
     initTileRows: function (cmp, event) {
         let records = cmp.get("v.privateState.records");
         let currentTileRows = [];
@@ -415,6 +440,40 @@
                 }
             }
         );
+    },
+    //Auxiliary
+    toast: function (duration, title, mode, message, type, icon) {
+        $A.get("e.force:showToast")
+            .setParams({
+                duration: duration,
+                mode: mode, //dismissible, pester, sticky
+                title: title,
+                key: icon,
+                type: type, //'error', 'warning', 'success', 'info' or'other'
+                message: message
+            })
+            .fire();
+    },
+    callApexController: function (component, actionName, parameters) {
+        return new Promise(
+            $A.getCallback((resolve, reject) => this.apexCallback(component, actionName, parameters, resolve, reject))
+        );
+    },
+    apexCallback: function (component, actionName, parameters, resolve, reject) {
+        const action = component.get(`c.${actionName}`);
+        action.setParams(parameters);
+        let self = this;
+
+        action.setCallback(self, (callbackResult) => self.apexResultCallback(callbackResult, resolve, reject));
+        $A.enqueueAction(action);
+    },
+    apexResultCallback: function (callbackResult, resolve, reject) {
+        if (callbackResult.getState() === "SUCCESS" && callbackResult.getReturnValue()) {
+            resolve(callbackResult.getReturnValue());
+        }
+        if (callbackResult.getState() === "ERROR") {
+            reject(callbackResult.getError());
+        }
     },
     setState: function (component, attributeName, newState) {
         for (const [key, value] of Object.entries(newState)) {
