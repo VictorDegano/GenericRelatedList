@@ -1,0 +1,91 @@
+<aura:component implements="force:hasRecordId,lightning:isUrlAddressable" access="global">
+    <aura:attribute name="isLoading" type="Boolean" default="true" />
+
+    <aura:attribute name="recordId" type="String" required="true" />
+
+    <aura:attribute
+        name="relatedFieldApiName"
+        type="String"
+        description="Nombre del campo que se usara para filtrar"
+    />
+    <aura:attribute
+        name="valueToFilter"
+        type="String"
+        description="Valor del campo que se usara para filtrar"
+    />
+
+    <!-- relationForeignkeyField -->
+
+    <aura:attribute name="sobjectApiName" type="String" required="true" />
+
+    <aura:attribute name="breadcrumbCollection" type="List" default="[]" />
+
+    <aura:attribute name="sortedBy" type="String" required="true" />
+    <aura:attribute name="sortedDirection" type="String" default="ASC" />
+    <aura:attribute name="customActions" type="List" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="columnsWithActions" type="List" access="private" />
+    <aura:attribute
+        name="fields"
+        type="String"
+        required="true"
+        default="Id, CaseNumber, Type, Status, Priority, Motivo__c, Subject, CreatedDate, OwnerId, Owner.Name"
+    />
+    <aura:attribute name="parentRelationshipApiName" type="String" />
+    <aura:attribute name="sObjectLabel" type="String" access="private" />
+    <aura:attribute name="sObjectLabelPlural" type="String" access="private" />
+    <aura:attribute
+        name="records"
+        type="Object"
+        access="private"
+        description="Son los Registros a Mostrar"
+    />
+
+    <aura:attribute name="isCreatable" type="Boolean" default="false" access="private" />
+    <aura:attribute name="isDeletable" type="Boolean" default="false" access="private" />
+    <aura:attribute name="isUpdatable" type="Boolean" default="false" access="private" />
+    <aura:attribute name="onRowActionHandler" type="Aura.Action" />
+
+    <!-- HANDLER -->
+    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
+
+    <!-- LIBRARIES -->
+    <lightning:navigation aura:id="navigationService" />
+    <lightning:workspaceAPI aura:id="workspaceAPI" />
+
+    <!-- MARKUP -->
+    <div class="inherit-height c-container">
+        <lightning:card class="inherit-height">
+            <aura:set attribute="title">
+                <lightning:breadcrumbs class="breadcumb">
+                    <aura:iteration items="{! v.breadcrumbCollection }" var="breadcrumb">
+                        <lightning:breadcrumb
+                            label="{! breadcrumb.label }"
+                            onclick="{! c.navigateTo }"
+                            name="{! breadcrumb.name }"
+                        />
+                    </aura:iteration>
+                </lightning:breadcrumbs>
+                <p>Casos</p>
+            </aura:set>
+
+            <aura:set attribute="footer">
+                <div class="slds-var-m-vertical_large"/>
+            </aura:set>
+            <aura:if isTrue="{! !v.isLoading }">
+                <c:RelatedListGenericaBody
+                    fields="{! v.fields }"
+                    relatedFieldApiName="{! v.relatedFieldApiName }"
+                    sobjectApiName="{! v.sobjectApiName }"
+                    recordId="{! v.recordId }"
+                    parentRelationshipApiName="{! v.parentRelationshipApiName }"
+                    relationForeignkeyField="{! v.valueToFilter }"
+                    sortedBy="CreatedDate"
+                    sortedDirection="DESC"
+                    customActions="{! v.customActions }"
+                    columns="{! v.columns }"
+                />
+            </aura:if>
+        </lightning:card>
+    </div>
+</aura:component>

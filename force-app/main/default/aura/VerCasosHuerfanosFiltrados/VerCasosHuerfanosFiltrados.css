@@ -1,0 +1,30 @@
+.THIS .slds-card .card-related-list .slds-card__header {
+    background: none;
+    margin: unset;
+    padding: unset;
+}
+
+.THIS .breadcumb {
+    font-weight: normal;
+    font-size: small;
+}
+
+.THIS .full-height {
+    height: 100%;
+}
+
+.THIS.inherit-height {
+    height: inherit;
+}
+
+.THIS .slds-card .slds-card__footer{
+    margin-top: unset;
+}
+
+.THIS .slds-card .slds-card__body {
+    margin-bottom: unset;
+}
+
+.THIS .slds-card.inherit-height {
+    min-height: 100%;
+}

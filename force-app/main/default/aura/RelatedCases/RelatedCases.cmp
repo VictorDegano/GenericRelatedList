@@ -18,7 +18,7 @@
             sortedBy: 'CreatedDate, Status',
             columns: [],
             recordId: null,
-            fields: 'Id, CaseNumber, Status, Type, CreatedDate',
+            fields: 'Id, CaseNumber, Status, Type, CreatedDate, Account.Id, Account.Name',
             relationForeignkeyField: null
         }"
     />

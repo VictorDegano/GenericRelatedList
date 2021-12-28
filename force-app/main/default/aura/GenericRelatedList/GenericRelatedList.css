@@ -16,7 +16,7 @@
 .THIS .slds-card__header {
     background: #f3f2f2;
     margin-bottom: unset;
-    padding: var(--lwc-varSpacingVerticalMedium,1rem) var(--lwc-varSpacingHorizontalMedium,1rem);
+    padding: var(--lwc-varSpacingVerticalMedium, 1rem) var(--lwc-varSpacingHorizontalMedium, 1rem);
 }
 
 .THIS .slds-card__body {

@@ -51,7 +51,7 @@
         <lightning:card class="slds-card_boundary card-related-list" iconName="{!v.ownState.iconName}">
             <aura:set attribute="actions">
                 <aura:if isTrue="{! v.ownState.isCreatable }">
-                    <lightning:button label="Nuevo" onclick="{!c.handleCreateRecord}" />
+                    <lightning:button label="New" onclick="{!c.handleCreateRecord}" />
                 </aura:if>
             </aura:set>
 
@@ -65,7 +65,7 @@
 
             <aura:set attribute="footer">
                 <aura:if isTrue="{! and(v.ownState.hasRecords,!v.ownState.isLoading)}">
-                    <a onclick="{!c.handleGotoRelatedList}">Mostrar Todos</a>
+                    <a onclick="{!c.handleGotoRelatedList}">View All</a>
                 </aura:if>
             </aura:set>
 

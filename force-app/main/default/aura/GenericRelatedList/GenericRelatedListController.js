@@ -51,17 +51,9 @@
     handleGotoRelatedList: function (component, event, helper) {
         let currentState = component.get("v.childState");
 
-        if (currentState.relationForeignkeyField) {
-            helper.goToComponent(component, event, currentState);
-        } else {
-            helper.goToRelatedList(currentState, event);
-        }
+        currentState.relationForeignkeyField ? helper.goToComponent(component, event, currentState) : helper.goToRelatedList(currentState, event);
     },
-    // Should be fixed when create record action will be enable
     handleCreateRecord: function (component, event, helper) {
-        helper.createRecord(
-            component.get("v.childState"),
-            event
-        );
+        helper.createRecord(component.get("v.childState"), event);
     }
 });

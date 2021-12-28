@@ -2,7 +2,7 @@
     initialize: function (component, event, helper) {
         let columns = [
             {
-                label: "Nombre",
+                label: "Name",
                 fieldName: "LinkName",
                 type: "url",
                 typeAttributes: {
@@ -11,17 +11,17 @@
                 }
             },
             {
-                label: "Tipo",
+                label: "Type",
                 fieldName: "Type",
                 type: "Text"
             },
             {
-                label: "Estado",
+                label: "Status",
                 fieldName: "Status",
                 type: "Text"
             },
             {
-                label: "Fecha",
+                label: "Created Date",
                 fieldName: "CreatedDate",
                 type: "date",
                 typeAttributes: {
@@ -31,6 +31,20 @@
                     hour: "2-digit",
                     minute: "2-digit"
                 }
+            },
+            {
+                label: "Account",
+                fieldName: "LinkName",
+                type: "url",
+                typeAttributes: {
+                    label: { fieldName: "Account_Id" },
+                    target: "_top"
+                }
+            },
+            {
+                label: "Account Name",
+                fieldName: "Account_Name",
+                type: "Text"
             }
         ];
 

@@ -1,24 +1,7 @@
 ({
-    // callbacjResolveMethods: {
-    //     fetchSuccess: function (component, helper, data, state) { helper.handleFetchSucces(component, data, state); },
-    //     fetchError: function (component, helper, errors) { helper.handlerFetchError(component, errors); },
-    // },
     fetchData: function (component, event, helper) {
         let state = component.get("v.state");
-        // let controllerAction = component.get("c.initData");
 
-        // controllerAction.setParams({
-        //     request: {
-        //         relatedFieldApiName: state.relatedFieldApiName,
-        //         numberOfRecords: state.numberOfRecords ? state.numberOfRecords + 1 : state.numberOfRecords,
-        //         sobjectApiName: state.sobjectApiName,
-        //         recordId: state.recordId,
-        //         sortBy: state.sortedBy,
-        //         fields: state.fields,
-        //         sortDirection: state.sortedDirection,
-        //         relationForeignkeyField: state.relationForeignkeyField
-        //     }
-        // });
         let params = {
             request: {
                 relatedFieldApiName: state.relatedFieldApiName,
@@ -31,35 +14,19 @@
                 relationForeignkeyField: state.relationForeignkeyField
             }
         };
-        //const self = this;
+
         this.callApexController(component, "initData", params)
-            .then( result => this.handleFetchSuccess(component, result, state))
-            /*.catch( errors => this.handleFetchError(component, errors))*/;
-
-        // controllerAction.setCallback(this, function (response) {
-        //     let calloutState = response.getState();
-        //     if (calloutState === "SUCCESS") {
-                
-        //     } else if (state === "ERROR") {
-                
-        //     }
-        // });
-
-        // $A.enqueueAction(controllerAction);
+            .then((result) => this.handleFetchSuccess(component, result, state))
+            .catch((errors) => this.handleFetchError(component, errors));
     },
     handleFetchSuccess: function (component, data, state) {
-        // let data = response.getReturnValue();
         let records = data.records;
 
-        let filteredRecords = records.filter(function (value, index, arr) {
+        let filteredRecords = records.filter((value, index, arr) => {
             return state.currentRecordId !== value.Id;
         });
 
-        if (
-            state.numberOfRecords &&
-            records.length > state.numberOfRecords &&
-            filteredRecords.length >= records.length
-        ) {
+        if (state.numberOfRecords && records.length > state.numberOfRecords && filteredRecords.length >= records.length) {
             filteredRecords.pop();
         }
         records = filteredRecords;
@@ -69,26 +36,7 @@
                 ? `${state.numberOfRecords}+`
                 : Math.min(state.numberOfRecords, records.length);
 
-        let isCaseObject = 'case' === data.sObjectLabel.toLocaleLowerCase();
-        records.forEach((record) => {
-            record.LinkName = "/" + record.Id;
-            for (const col in record) {
-                const curCol = record[col];
-
-                //we need to flat the object cause the datatable doesn't support complex objects
-                if (typeof curCol === "object") {
-                    const newVal = curCol.Id ? "/" + curCol.Id : null;
-                    this.flattenStructure(record, col + "_", curCol);
-                    if (newVal !== null) {
-                        record[col + "_LinkName"] = newVal;
-                    }
-                }
-
-                if (isCaseObject) {
-                    record["Name"] = record.CaseNumber;
-                }
-            }
-        });
+        records.forEach((record) => this.processRetrievedRecord(record, data.sObjectLabel));
 
         this.setState(component, "v.state", {
             parentRelationshipApiName: !state.parentRelationshipApiName
@@ -124,25 +72,44 @@
         });
         componentEvent.fire();
     },
+    processRetrievedRecord: function (record, sObjectLabel) {
+        record.LinkName = "/" + record.Id;
+        for (const col in record) {
+            const curCol = record[col];
+
+            //we need to flat the object cause the datatable doesn't support complex objects
+            if (typeof curCol === "object") {
+                const newVal = curCol.Id ? "/" + curCol.Id : null;
+
+                this.flattenStructure(record, col + "_", curCol);
+
+                if (newVal !== null) {
+                    record[col + "_LinkName"] = newVal;
+                }
+            }
+
+            if ("case" === sObjectLabel.toLocaleLowerCase()) {
+                record["Name"] = record.CaseNumber;
+            }
+        }
+    },
     handleFetchError: function (component, errors) {
         this.toast(5, "¡Error!", "pester", errors, "error", "error");
-    
+
         this.setState(component, "v.privateState", { isLoading: false });
     },
     // flat the object to get access to all fields (Datatablerow doesn't accept estructured objects)
     flattenStructure: function (topObject, prefix, toBeFlattened) {
         for (const prop in toBeFlattened) {
             const curVal = toBeFlattened[prop];
-            if (typeof curVal === "object") {
-                this.flattenStructure(topObject, prefix + prop + "_", curVal);
-            } else {
-                topObject[prefix + prop] = curVal;
-            }
+            typeof curVal === "object"
+                ? this.flattenStructure(topObject, prefix + prop + "_", curVal)
+                : (topObject[prefix + prop] = curVal);
         }
     },
-    initColumnsWithActions: function (cmp) {
-        let privateState = cmp.get("v.privateState");
-        let state = cmp.get("v.state");
+    initColumnsWithActions: function (component) {
+        let privateState = component.get("v.privateState");
+        let state = component.get("v.state");
 
         let customActions = state.customActions;
         if (!customActions.length) {
@@ -157,12 +124,12 @@
             }
         }
 
-        this.setState(cmp, "v.privateState", {
+        this.setState(component, "v.privateState", {
             columnsWithActions: [...state.columns, { type: "action", typeAttributes: { rowActions: customActions } }]
         });
     },
-    removeRecord: function (cmp, row) {
-        let sobjectLabel = cmp.get("v.privateState.sobjectLabel");
+    removeRecord: function (component, row) {
+        let sobjectLabel = component.get("v.privateState.sobjectLabel");
         $A.createComponents(
             [
                 ["c:DeleteRecordContent", { sobjectLabel: sobjectLabel }],
@@ -172,7 +139,7 @@
                 if (status === "SUCCESS") {
                     let modalBody = components[0];
                     let modalFooter = components[1];
-                    cmp.find("overlayLib").showCustomModal({
+                    component.find("overlayLib").showCustomModal({
                         header: "Borrar " + sobjectLabel,
                         body: modalBody,
                         footer: modalFooter,
@@ -191,23 +158,23 @@
         });
         createRecordEvent.fire();
     },
-    fireAction: function (cmp, actionName, row) {
+    fireAction: function (component, actionName, row) {
         switch (actionName.toLowerCase()) {
             case "edit":
-                this.editRecord(cmp, row);
+                this.editRecord(component, row);
                 break;
             case "delete":
-                this.removeRecord(cmp, row);
+                this.removeRecord(component, row);
                 break;
         }
     },
     //Tile Format
-    initTileRows: function (cmp, event) {
-        let records = cmp.get("v.privateState.records");
+    initTileRows: function (component, event) {
+        let records = component.get("v.privateState.records");
         let currentTileRows = [];
-        this.createRow(cmp, records, currentTileRows);
+        this.createRow(component, records, currentTileRows);
     },
-    createRow: function (cmp, records, currentTileRows) {
+    createRow: function (component, records, currentTileRows) {
         let self = this;
         let record = records.shift();
 
@@ -373,7 +340,7 @@
                                     HTMLAttributes: {
                                         id: record.Id,
                                         href: "#",
-                                        onclick: cmp.getReference("c.handleGoToRecord")
+                                        onclick: component.getReference("c.handleGoToRecord")
                                     }
                                 }
                             ],
@@ -393,8 +360,8 @@
                             [
                                 "c:RecordActionsMenu",
                                 {
-                                    isDeletable: cmp.get("v.privateState.isDeletable"),
-                                    isUpdatable: cmp.get("v.privateState.isUpdatable"),
+                                    isDeletable: component.get("v.privateState.isDeletable"),
+                                    isUpdatable: component.get("v.privateState.isUpdatable"),
                                     value: record
                                 }
                             ]
@@ -418,9 +385,9 @@
 
                                 currentTileRows.push(p);
                                 if (records.length > 0) {
-                                    self.createRow(cmp, records, currentTileRows);
+                                    self.createRow(component, records, currentTileRows);
                                 } else {
-                                    cmp.set("v.privateState.tileBody", currentTileRows);
+                                    component.set("v.privateState.tileBody", currentTileRows);
                                 }
                             } else if (status === "INCOMPLETE") {
                                 console.log("No response from server or client is offline.");
