@@ -1,0 +1,36 @@
+
+    // actions: {
+    //     edit: function (component, helper, row) { helper.editRecord(component, row) },
+    //     delete: function (component, helper, row) { helper.removeRecord(component, row) }
+    // },
+    // self: function () { return this; },
+    // callApex: function(component, actionName, parameters) {
+    //     return new Promise(
+    //         $A.getCallback(
+    //             (resolve, reject) => this.callCallback(component, actionName, parameters, resolve, reject)
+    //         )
+    //     );
+    // },
+    // callCallback: function(component, actionName, parameters, resolve, reject) {
+    //     let controllerAction = component.get(`c.${actionName}`);
+    //     controllerAction.setParams(parameters);
+
+    //     controllerAction.setCallback(
+    //         self,
+    //         callbackResult => callStateResolver[callbackResult.getState()](callbackResult, resolve, reject)
+    //     );
+
+    //     $A.enqueueAction(controllerAction);
+    // },
+    // callStateResolver: {
+    //     "SUCCESS": function(callbackResult, resolve, reject) { resolve(callbackResult.getReturnValue()); },
+    //     "INCOMPLETE": function (callbackResult, resolve, reject) { console.log(`Incomplete Action ${callbackResult.getReturnValue()}`); },
+    //     "ERROR": function (callbackResult, resolve, reject) { reject(callbackResult.getError()); },
+    //     "NEW": function(callbackResult, resolve, reject) { console.log(`It's a New Action`); },
+    //     "RUNNING": function(callbackResult, resolve, reject) { console.log(`The Action It's Running`); }
+    // },
+    setState: function(component, attributeName, newState) {
+        for (const [key, value] of Object.entries(newState)) {
+            component.set(`${attributeName}.${key}`, value);
+        }
+    }
