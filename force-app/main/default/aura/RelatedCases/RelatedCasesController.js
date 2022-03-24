@@ -55,7 +55,8 @@
         LightningUtilities.setState(component, "v.state", {
             currentRecordId: component.get("v.recordId"),
             customActions: customActions,
-            columns: columns
+            columns: columns,
+            isLoaded: true
         });
     },
     loadData: function (component, event, helper) {
@@ -63,7 +64,7 @@
             // relationForeignkeyField: Account.Id, //You should set it if you want to use another field
             relatedFieldApiName: "AccountId",
             recordId: component.get("v.caseRecord").AccountId,
-            isLoaded: true
+            recordLoaded: true
         });
     }
 });

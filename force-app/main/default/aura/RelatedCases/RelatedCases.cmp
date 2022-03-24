@@ -5,6 +5,7 @@
         type="Map"
         default="{
             isLoaded: false,
+            recordLoaded: false,
             parentRelationshipApiName:'Cases',
             relatedFieldApiName: 'AccountId',
             currentRecordId: null,
@@ -33,14 +34,16 @@
     <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
 
     <!-- MARKUP -->
-    <force:recordData
-        aura:id="recordLoader"
-        recordId="{!v.recordId}"
-        fields="AccountId, SuppliedEmail"
-        targetFields="{!v.caseRecord}"
-    />
-
     <aura:if isTrue="{! v.state.isLoaded }">
-        <c:GenericRelatedList parentState="{#v.state}" />
+        <force:recordData
+            aura:id="recordLoader"
+            recordId="{!v.recordId}"
+            fields="AccountId, SuppliedEmail"
+            targetFields="{!v.caseRecord}"
+        />
+
+        <aura:if isTrue="{! v.state.recordLoaded }">
+            <c:GenericRelatedList parentState="{#v.state}" />
+        </aura:if>
     </aura:if>
 </aura:component>
