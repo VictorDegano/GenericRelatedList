@@ -2,7 +2,7 @@
     initialize: function (component, event, helper) {
         let parentState = component.get("v.parentState");
 
-        helper.setState(component, "v.childState", {
+        LightningUtilities.setState(component, "v.childState", {
             recordId: parentState.recordId,
             currentRecordId: parentState.currentRecordId,
             relationForeignkeyField: parentState.relationForeignkeyField,
@@ -18,7 +18,7 @@
             tileFormat: parentState.tileFormat
         });
 
-        helper.setState(component, "v.ownState", {
+        LightningUtilities.setState(component, "v.ownState", {
             tableTitle: parentState.tableTitle,
             iconName: parentState.iconName,
             numberOfRecordsForTitle: 0,
@@ -46,7 +46,7 @@
             newOwnState["tableTitle"] = data.tableTitle;
         }
 
-        helper.setState(component, "v.ownState", newOwnState);
+        LightningUtilities.setState(component, "v.ownState", newOwnState);
     },
     handleGotoRelatedList: function (component, event, helper) {
         let currentState = component.get("v.childState");

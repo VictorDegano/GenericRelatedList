@@ -15,7 +15,7 @@
             }
         };
 
-        this.callApexController(component, "initData", params)
+        LightningUtilities.callApex(component, "initData", params)
             .then((result) => this.handleFetchSuccess(component, result, state))
             .catch((errors) => this.handleFetchError(component, errors));
     },
@@ -38,7 +38,7 @@
 
         records.forEach((record) => this.processRetrievedRecord(record, data.sObjectLabel));
 
-        this.setState(component, "v.state", {
+        LightningUtilities.setState(component, "v.state", {
             parentRelationshipApiName: !state.parentRelationshipApiName
                 ? data.parentRelationshipApiName
                 : state.parentRelationshipApiName,
@@ -47,7 +47,7 @@
         });
 
         let hasRecords = records.length > 0;
-        this.setState(component, "v.privateState", {
+        LightningUtilities.setState(component, "v.privateState", {
             records: records,
             numberOfRecordsForTitle: numberOfRecordsTitle,
             isCreatable: data.isCreatable,
@@ -94,9 +94,9 @@
         }
     },
     handleFetchError: function (component, errors) {
-        this.toast(5, "¡Error!", "pester", errors, "error", "error");
+        LightningUtilities.showToast(5, "¡Error!", "pester", errors, "error", "error");
 
-        this.setState(component, "v.privateState", { isLoading: false });
+        LightningUtilities.setState(component, "v.privateState", { isLoading: false });
     },
     // flat the object to get access to all fields (Datatablerow doesn't accept estructured objects)
     flattenStructure: function (topObject, prefix, toBeFlattened) {
@@ -124,32 +124,37 @@
             }
         }
 
-        this.setState(component, "v.privateState", {
+        LightningUtilities.setState(component, "v.privateState", {
             columnsWithActions: [...state.columns, { type: "action", typeAttributes: { rowActions: customActions } }]
         });
     },
     removeRecord: function (component, row) {
-        let sobjectLabel = component.get("v.privateState.sobjectLabel");
-        $A.createComponents(
-            [
-                ["c:DeleteRecordContent", { sobjectLabel: sobjectLabel }],
-                ["c:DeleteRecordFooter", { record: row, sobjectLabel: sobjectLabel }]
-            ],
-            function (components, status, errorMessage) {
-                if (status === "SUCCESS") {
-                    let modalBody = components[0];
-                    let modalFooter = components[1];
-                    component.find("overlayLib").showCustomModal({
-                        header: "Borrar " + sobjectLabel,
-                        body: modalBody,
-                        footer: modalFooter,
-                        showCloseButton: true
-                    });
-                } else if (status === "ERROR") {
-                    console.log(errorMessage);
-                }
-            }
+        const sobjectLabel = component.get("v.privateState.sobjectLabel");
+        const componentsToRender = [
+            ["c:DeleteRecordContent", { sobjectLabel: sobjectLabel }],
+            ["c:DeleteRecordFooter", { record: row, sobjectLabel: sobjectLabel }]
+        ];
+
+        LightningUtilities.castComponent(
+            component,
+            componentsToRender,
+            this.removeRecordComponentCastSuccess,
+            this.removeRecordComponentCastError
         );
+
+    },
+    removeRecordComponentCastSuccess: function (component, components, status, errorMessage){
+        let modalBody = components[0];
+        let modalFooter = components[1];
+        component.find("overlayLib").showCustomModal({
+            header: `Delete ${component.get("v.privateState.sobjectLabel")}`,
+            body: modalBody,
+            footer: modalFooter,
+            showCloseButton: true
+        });
+    },
+    removeRecordComponentCastError: function (component, components, status, errorMessage){
+        console.log(errorMessage);
     },
     editRecord: function (component, row) {
         let createRecordEvent = $A.get("e.force:editRecord");
@@ -407,44 +412,5 @@
                 }
             }
         );
-    },
-    //Auxiliary
-    toast: function (duration, title, mode, message, type, icon) {
-        $A.get("e.force:showToast")
-            .setParams({
-                duration: duration,
-                mode: mode, //dismissible, pester, sticky
-                title: title,
-                key: icon,
-                type: type, //'error', 'warning', 'success', 'info' or'other'
-                message: message
-            })
-            .fire();
-    },
-    callApexController: function (component, actionName, parameters) {
-        return new Promise(
-            $A.getCallback((resolve, reject) => this.apexCallback(component, actionName, parameters, resolve, reject))
-        );
-    },
-    apexCallback: function (component, actionName, parameters, resolve, reject) {
-        const action = component.get(`c.${actionName}`);
-        action.setParams(parameters);
-        let self = this;
-
-        action.setCallback(self, (callbackResult) => self.apexResultCallback(callbackResult, resolve, reject));
-        $A.enqueueAction(action);
-    },
-    apexResultCallback: function (callbackResult, resolve, reject) {
-        if (callbackResult.getState() === "SUCCESS" && callbackResult.getReturnValue()) {
-            resolve(callbackResult.getReturnValue());
-        }
-        if (callbackResult.getState() === "ERROR") {
-            reject(callbackResult.getError());
-        }
-    },
-    setState: function (component, attributeName, newState) {
-        for (const [key, value] of Object.entries(newState)) {
-            component.set(`${attributeName}.${key}`, value);
-        }
     }
 });

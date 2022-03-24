@@ -52,14 +52,14 @@
             //{ label: "Custom action", name: "custom_action" }
         ];
 
-        helper.setState(component, "v.state", {
+        LightningUtilities.setState(component, "v.state", {
             currentRecordId: component.get("v.recordId"),
             customActions: customActions,
             columns: columns
         });
     },
     loadData: function (component, event, helper) {
-        helper.setState(component, "v.state", {
+        LightningUtilities.setState(component, "v.state", {
             // relationForeignkeyField: Account.Id, //You should set it if you want to use another field
             relatedFieldApiName: "AccountId",
             recordId: component.get("v.caseRecord").AccountId,

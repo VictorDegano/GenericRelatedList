@@ -39,11 +39,11 @@
     />
 
     <!-- HANDLER -->
-    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
     <aura:handler name="fetchDataEvent" event="c:GenericRelatedListFetchDataEvent" action="{!c.handleFetchDataEvent}" />
     <!-- EVENTS-->
 
     <!-- LIBRARIES -->
+    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
     <lightning:navigation aura:id="navigationService" />
 
     <!-- MARKUP -->

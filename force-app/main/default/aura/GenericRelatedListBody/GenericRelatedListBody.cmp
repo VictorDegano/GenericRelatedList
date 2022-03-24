@@ -41,7 +41,6 @@
     />
 
     <!-- HANDLER -->
-    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
     <aura:handler name="change" value="{!v.privateState.columns}" action="{! c.handleColumnsChange }" />
     <aura:handler event="force:showToast" action="{!c.handleToastEvent}" />
 
@@ -49,6 +48,7 @@
     <aura:registerEvent name="fetchDataEvent" type="c:GenericRelatedListFetchDataEvent" />
 
     <!-- LIBRARIES -->
+    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
     <lightning:navigation aura:id="navigationService" />
     <lightning:overlayLibrary aura:id="overlayLib" />
 

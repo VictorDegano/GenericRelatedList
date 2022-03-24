@@ -7,8 +7,7 @@
         let record = component.get("v.record");
         let sobjectLabel = component.get("v.sobjectLabel");
 
-        helper
-            .callApexController(component, "deleteRecord", { recordId: record.Id })
+        LightningUtilities.callApex(component, "deleteRecord", { recordId: record.Id })
             .then((result) =>
                 helper.launchToastAndClose(component, {
                     time: 6000,
