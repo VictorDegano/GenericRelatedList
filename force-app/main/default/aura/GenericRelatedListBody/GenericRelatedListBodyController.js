@@ -17,7 +17,7 @@
     handleToastEvent: function (component, event, helper) {
         let eventType = event.getParam("type");
         let eventMessage = event.getParam("message");
-        if (eventType == "SUCCESS" && eventMessage.includes(component.get("v.privateState.sobjectLabel"))) {
+        if (eventType.toLowerCase() === "SUCCESS".toLowerCase() && eventMessage.toLowerCase().includes(component.get("v.privateState.sobjectLabel").toLowerCase())) {
             helper.fetchData(component, event, helper);
             event.stopPropagation();
         }
