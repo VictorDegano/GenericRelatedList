@@ -1,0 +1,46 @@
+<aura:component>
+
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="column" type="Object" default="{}" />
+    <aura:attribute name="record" type="Object" default="{}" />
+    <aura:attribute name="fieldValue" type="Object" default="{}" access="private"/>
+    <aura:attribute name="fieldLabel" type="String" default="" access="private"/>
+
+    <!-- LIBRARIES -->
+    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
+
+    <!-- MARKUP -->
+    <!-- <p> -->
+    <dl class="slds-dl_horizontal">
+        <dt class="slds-dl_horizontal__label">
+            <p class="slds-truncate" title="{! v.column.label}">{! v.column.label}:</p>
+        </dt>
+        <dd class="slds-dl_horizontal__detail slds-tile__meta">
+            <p class="slds-truncate" title="{! v.fieldValue }">
+                <aura:if isTrue="{! or(v.column.type == 'Date',v.column.type == 'date')}">
+                    <lightning:formattedDateTime
+                        value="{! v.fieldValue}"
+                        year="{! v.column.typeAttributes.year }"
+                        month="{! v.column.typeAttributes.month }"
+                        day="{! v.column.typeAttributes.day }"
+                        hour="{! v.column.typeAttributes.hour }"
+                        minute="{!v.column.typeAttributes.minute }"
+                    />
+                </aura:if>
+
+                <aura:if isTrue="{! or(v.column.type == 'Text',v.column.type == 'text')}">
+                    <lightning:formattedText
+                        value="{! v.fieldValue}"
+                    />
+                </aura:if>
+
+                <aura:if isTrue="{! or(v.column.type == 'Url',v.column.type == 'url')}">
+                    <lightning:formattedUrl
+                        value="{! v.fieldValue}" label="{! v.labelValue}" tooltip="{! v.labelValue}" target="{! v.column.typeAttributes.target}"
+                    />
+                </aura:if>
+            </p>
+        </dd>
+    </dl>
+    <!-- </p> -->
+</aura:component>

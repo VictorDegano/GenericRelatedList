@@ -24,23 +24,23 @@
     },
 
     //TILE FORMAT ACTIONS
-    handleTileAction: function (component, event, helper) {
-        let action = event.getParam("value");
-        let record = event.getSource().get("v.value");
+    // handleTileAction: function (component, event, helper) {
+    //     let action = event.getParam("value");
+    //     let record = event.getSource().get("v.value");
 
-        helper.fireAction(component, action, record);
-    },
-    handleGoToRecord: function (component, event, helper) {
-        let navLink = component.find("navigationService");
-        let pageRef = {
-            type: "standard__recordPage",
-            attributes: {
-                objectApiName: component.get("v.state.sobjectApiName"),
-                actionName: "view",
-                recordId: event.target.id
-            }
-        };
-        event.preventDefault();
-        navLink.navigate(pageRef);
-    }
+    //     helper.fireAction(component, action, record);
+    // },
+    // handleGoToRecord: function (component, event, helper) {
+    //     let navLink = component.find("navigationService");
+    //     let pageRef = {
+    //         type: "standard__recordPage",
+    //         attributes: {
+    //             objectApiName: component.get("v.state.sobjectApiName"),
+    //             actionName: "view",
+    //             recordId: event.target.id
+    //         }
+    //     };
+    //     event.preventDefault();
+    //     navLink.navigate(pageRef);
+    // }
 });

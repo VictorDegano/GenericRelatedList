@@ -68,8 +68,12 @@
                         resizeColumnDisabled="true"
                     />
                     <aura:set attribute="else">
+                        <c:TilesPanel
+                            columns="{! v.state.columns }"
+                            records="{! v.privateState.records }"
+                        />
                         <!-- {! v.tileBody} -->
-                        <div class="slds-grid slds-wrap slds-var-p-around_medium">
+                        <!-- <div class="slds-grid slds-wrap slds-var-p-around_medium">
                             <aura:iteration items="{! v.privateState.records }" var="record">
                                 <lightning:layout
                                     verticalAlign="strech"
@@ -137,7 +141,7 @@
                                     </lightning:layoutItem>
                                 </lightning:layout>
                             </aura:iteration>
-                        </div>
+                        </div> -->
                     </aura:set>
                 </aura:if>
 
