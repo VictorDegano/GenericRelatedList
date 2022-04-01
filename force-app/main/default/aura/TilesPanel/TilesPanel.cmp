@@ -1,15 +1,12 @@
 <aura:component>
-
-
     <!-- ATTRIBUTES -->
     <!-- <aura:attribute name="body" type="Boolean" default="Aura.Component" /> -->
     <aura:attribute name="columns" type="List" default="[]" />
     <aura:attribute name="records" type="List" default="[]" />
 
     <!-- LIBRARIES -->
-    <ltng:require scripts="{!$Resource.LightningUtilities}"/>
-     <!-- afterScriptsLoaded="{!c.initialize}"/> -->
-
+    <ltng:require scripts="{!$Resource.LightningUtilities}" />
+    <!-- afterScriptsLoaded="{!c.initialize}"/> -->
 
     <!-- MARKUP -->
     <!-- {! v.tileBody} -->
@@ -24,10 +21,7 @@
                     <lightning:tile label="{! record.CaseNumber}" href="{! record.LinkName}">
                         <aura:iteration items="{! v.columns }" var="column">
                             <aura:if isTrue="{! and(column.label != 'Name',column.label != 'CaseName')}">
-                                <c:TileField
-                                    column="{! column }"
-                                    record="{! record }"
-                                />
+                                <c:TileField column="{! column }" record="{! record }" />
                             </aura:if>
                         </aura:iteration>
                     </lightning:tile>
@@ -92,4 +86,4 @@
             </lightning:layout>
         </aura:iteration>
     </div>
-</aura:component>	
+</aura:component>

@@ -31,7 +31,7 @@
     <aura:handler name="change" value="{!v.caseRecord}" action="{!c.loadData}" />
 
     <!-- LIBRARIES -->
-    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
+    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}" />
 
     <!-- MARKUP -->
     <aura:if isTrue="{! v.state.isLoaded }">

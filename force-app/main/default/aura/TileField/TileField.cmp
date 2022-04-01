@@ -1,13 +1,12 @@
 <aura:component>
-
     <!-- ATTRIBUTES -->
     <aura:attribute name="column" type="Object" default="{}" />
     <aura:attribute name="record" type="Object" default="{}" />
-    <aura:attribute name="fieldValue" type="Object" default="{}" access="private"/>
-    <aura:attribute name="fieldLabel" type="String" default="" access="private"/>
+    <aura:attribute name="fieldValue" type="Object" default="{}" access="private" />
+    <aura:attribute name="fieldLabel" type="String" default="" access="private" />
 
     <!-- LIBRARIES -->
-    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
+    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}" />
 
     <!-- MARKUP -->
     <!-- <p> -->
@@ -29,14 +28,15 @@
                 </aura:if>
 
                 <aura:if isTrue="{! or(v.column.type == 'Text',v.column.type == 'text')}">
-                    <lightning:formattedText
-                        value="{! v.fieldValue}"
-                    />
+                    <lightning:formattedText value="{! v.fieldValue}" />
                 </aura:if>
 
                 <aura:if isTrue="{! or(v.column.type == 'Url',v.column.type == 'url')}">
                     <lightning:formattedUrl
-                        value="{! v.fieldValue}" label="{! v.labelValue}" tooltip="{! v.labelValue}" target="{! v.column.typeAttributes.target}"
+                        value="{! v.fieldValue}"
+                        label="{! v.labelValue}"
+                        tooltip="{! v.labelValue}"
+                        target="{! v.column.typeAttributes.target}"
                     />
                 </aura:if>
             </p>

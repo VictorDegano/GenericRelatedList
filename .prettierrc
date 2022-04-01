@@ -1,6 +1,6 @@
 {
   "trailingComma": "none",
-  "printWidth": 124,
+  "printWidth": 120,
   "tabWidth": 4,
   "overrides": [
     {

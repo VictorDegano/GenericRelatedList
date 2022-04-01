@@ -1,10 +1,11 @@
 public with sharing class RelatedListGenericaController {
-
     private static final string baseQuery = 'SELECT {0} FROM {1} WHERE {2} = ';
 
     @AuraEnabled
     public static RelatedListResponse initData(RelatedListRequest request) {
-        Schema.DescribeSObjectResult sobjectDescribe = Schema.getGlobalDescribe().get(request.sobjectApiName).getDescribe();
+        Schema.DescribeSObjectResult sobjectDescribe = Schema.getGlobalDescribe()
+            .get(request.sobjectApiName)
+            .getDescribe();
         RelatedListResponse response = new RelatedListResponse();
         response.parentRelationshipApiName = getParentRelationshipName(
             request.recordId,
@@ -45,15 +46,11 @@ public with sharing class RelatedListGenericaController {
         Boolean useForeignKey = String.isNotBlank(request.relationForeignkeyField);
         String condition = useForeignKey ? request.relationForeignkeyField : request.recordId;
         String orderLimitString = ' ORDER BY ';
-        List<String> params = new List<String>{
-            request.fields,
-            request.sObjectApiName,
-            request.relatedFieldApiName
-        };
+        List<String> params = new List<String>{ request.fields, request.sObjectApiName, request.relatedFieldApiName };
 
         orderLimitString += getOrderCondition(request.sortBy, request.sortDirection);
 
-        if( request.numberOfRecords != null && request.numberOfRecords > 0){
+        if (request.numberOfRecords != null && request.numberOfRecords > 0) {
             orderLimitString += ' LIMIT ' + String.valueOf(request.numberOfRecords);
         }
 
@@ -63,7 +60,11 @@ public with sharing class RelatedListGenericaController {
         return Database.query(query);
     }
 
-    private static String getParentRelationshipName(Id recordId, String childSobjectApiName, String relatedFieldApiName) {
+    private static String getParentRelationshipName(
+        Id recordId,
+        String childSobjectApiName,
+        String relatedFieldApiName
+    ) {
         Schema.DescribeSObjectResult descrRes = recordId.getSObjectType().getDescribe();
         String name;
         for (Schema.ChildRelationship cr : descrRes.getChildRelationships()) {
@@ -78,7 +79,7 @@ public with sharing class RelatedListGenericaController {
         return name;
     }
 
-    private static String getOrderCondition(String sortBy, String sortDirection){
+    private static String getOrderCondition(String sortBy, String sortDirection) {
         List<String> sortFields = sortBy.deleteWhitespace().split(',');
         List<String> sortiDirections = sortDirection.deleteWhitespace().split(',');
 

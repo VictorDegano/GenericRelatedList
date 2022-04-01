@@ -7,7 +7,7 @@
     <lightning:overlayLibrary aura:id="overlayLib" />
 
     <!-- MARKUP -->
-    <ltng:require scripts="{!$Resource.LightningUtilities}"/>
+    <ltng:require scripts="{!$Resource.LightningUtilities}" />
     <lightning:button name="Cancel" label="Cancel" onclick="{!c.handleCancel}" />
     <lightning:button name="Delete" label="Delete" variant="brand" onclick="{!c.handleDelete}" />
 </aura:component>

@@ -3,7 +3,7 @@ public class GenericRelatedListControllerTest {
     @IsTest
     private static void weCantGetTheRealtedRecordsOfAndObjectIfDoentHaveRelatedRecords() {
         //Setup(Given)
-        Account cuenta = new Account (Name = 'Test');
+        Account cuenta = new Account(Name = 'Test');
         insert cuenta;
 
         GenericRelatedListController.RelatedListRequest request = new GenericRelatedListController.RelatedListRequest();
@@ -17,23 +17,13 @@ public class GenericRelatedListControllerTest {
 
         //Exercise(When)
         Test.startTest();
-        GenericRelatedListController.RelatedListResponse response = GenericRelatedListController.initData(
-            request
-        );
+        GenericRelatedListController.RelatedListResponse response = GenericRelatedListController.initData(request);
         Test.stopTest();
 
         //Test(Then)
         System.assertEquals('Case', response.sObjectLabel, 'No es el la etiqueta correcta');
-        System.assertEquals(
-            'Cases',
-            response.sObjectLabelPlural,
-            'No es el la etiqueta en plural correcta'
-        );
-        System.assertEquals(
-            'Cases',
-            response.parentRelationshipApiName,
-            'No es el nombre de relacion padre esperada'
-        );
+        System.assertEquals('Cases', response.sObjectLabelPlural, 'No es el la etiqueta en plural correcta');
+        System.assertEquals('Cases', response.parentRelationshipApiName, 'No es el nombre de relacion padre esperada');
         System.assertEquals(0, response.recordsSize, 'No tiene que tener conteo de registros');
         System.assertEquals(
             true,
@@ -46,7 +36,7 @@ public class GenericRelatedListControllerTest {
     @IsTest
     private static void weCanGetTheRealtedRecordsOfAndObject() {
         //Setup(Given)
-        Account cuenta = new Account (Name = 'Test');
+        Account cuenta = new Account(Name = 'Test');
         insert cuenta;
 
         Case casoSinRelacion = new Case();
@@ -56,9 +46,7 @@ public class GenericRelatedListControllerTest {
         //     .withEtiquetaProveedor('TECO')
         //     .build();
 
-        Case casoViejo = new Case(
-            AccountId = cuenta.Id
-        );
+        Case casoViejo = new Case(AccountId = cuenta.Id);
         // Build.anCaseReclamo()
         //     .withAccountId(cuenta)
         //     .withType('Alta - Validacion identidad')
@@ -66,9 +54,7 @@ public class GenericRelatedListControllerTest {
         //     .withEtiquetaProveedor('TECO')
         //     .build();
 
-        Case casoNuevo = new Case(
-            AccountId = cuenta.Id
-        );
+        Case casoNuevo = new Case(AccountId = cuenta.Id);
         // Build.anCaseReclamo()
         //     .withAccountId(cuenta)
         //     .withType('Alta - Validacion identidad')
@@ -90,29 +76,15 @@ public class GenericRelatedListControllerTest {
 
         //Exercise(When)
         Test.startTest();
-        GenericRelatedListController.RelatedListResponse response = GenericRelatedListController.initData(
-            request
-        );
+        GenericRelatedListController.RelatedListResponse response = GenericRelatedListController.initData(request);
         Test.stopTest();
 
         //Test(Then)
         System.assertEquals('Case', response.sObjectLabel, 'No es el la etiqueta correcta');
-        System.assertEquals(
-            'Cases',
-            response.sObjectLabelPlural,
-            'No es el la etiqueta en plural correcta'
-        );
-        System.assertEquals(
-            'Cases',
-            response.parentRelationshipApiName,
-            'No es el nombre de relacion padre esperada'
-        );
+        System.assertEquals('Cases', response.sObjectLabelPlural, 'No es el la etiqueta en plural correcta');
+        System.assertEquals('Cases', response.parentRelationshipApiName, 'No es el nombre de relacion padre esperada');
         System.assertEquals(2, response.recordsSize, 'Solo tiene que haber dos registro');
-        System.assertEquals(
-            casoNuevo.id,
-            ((Case) response.records[0]).id,
-            'No se trajeron en el orden esperado'
-        );
+        System.assertEquals(casoNuevo.id, ((Case) response.records[0]).id, 'No se trajeron en el orden esperado');
         System.assertEquals(
             false,
             response.records.isEmpty(),
@@ -124,7 +96,7 @@ public class GenericRelatedListControllerTest {
     @IsTest
     private static void weCanDeleteARecord() {
         //Setup(Given)
-        Account anAccount = new Account (Name = 'Test');
+        Account anAccount = new Account(Name = 'Test');
         insert anAccount;
 
         //Exercise(When)

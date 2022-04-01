@@ -23,4 +23,4 @@
         event.preventDefault();
         navLink.navigate(pageRef);
     }
-})
+});

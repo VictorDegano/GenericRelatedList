@@ -3,16 +3,8 @@
 
     <aura:attribute name="recordId" type="String" required="true" />
 
-    <aura:attribute
-        name="relatedFieldApiName"
-        type="String"
-        description="Nombre del campo que se usara para filtrar"
-    />
-    <aura:attribute
-        name="valueToFilter"
-        type="String"
-        description="Valor del campo que se usara para filtrar"
-    />
+    <aura:attribute name="relatedFieldApiName" type="String" description="Nombre del campo que se usara para filtrar" />
+    <aura:attribute name="valueToFilter" type="String" description="Valor del campo que se usara para filtrar" />
 
     <!-- relationForeignkeyField -->
 
@@ -34,12 +26,7 @@
     <aura:attribute name="parentRelationshipApiName" type="String" />
     <aura:attribute name="sObjectLabel" type="String" access="private" />
     <aura:attribute name="sObjectLabelPlural" type="String" access="private" />
-    <aura:attribute
-        name="records"
-        type="Object"
-        access="private"
-        description="Son los Registros a Mostrar"
-    />
+    <aura:attribute name="records" type="Object" access="private" description="Son los Registros a Mostrar" />
 
     <aura:attribute name="isCreatable" type="Boolean" default="false" access="private" />
     <aura:attribute name="isDeletable" type="Boolean" default="false" access="private" />
@@ -70,10 +57,10 @@
             </aura:set>
 
             <aura:set attribute="footer">
-                <div class="slds-var-m-vertical_large"/>
+                <div class="slds-var-m-vertical_large" />
             </aura:set>
             <aura:if isTrue="{! !v.isLoading }">
-                <c:RelatedListGenericaBody
+                <!-- <c:RelatedListGenericaBody
                     fields="{! v.fields }"
                     relatedFieldApiName="{! v.relatedFieldApiName }"
                     sobjectApiName="{! v.sobjectApiName }"
@@ -84,7 +71,7 @@
                     sortedDirection="DESC"
                     customActions="{! v.customActions }"
                     columns="{! v.columns }"
-                />
+                /> -->
             </aura:if>
         </lightning:card>
     </div>

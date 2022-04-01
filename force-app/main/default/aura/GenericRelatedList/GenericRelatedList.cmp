@@ -43,7 +43,11 @@
     <!-- EVENTS-->
 
     <!-- LIBRARIES -->
-    <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}"/>
+    <ltng:require
+        styles="{!$Resource.MultilineMessageToast}"
+        scripts="{!$Resource.LightningUtilities}"
+        afterScriptsLoaded="{!c.initialize}"
+    />
     <lightning:navigation aura:id="navigationService" />
 
     <!-- MARKUP -->

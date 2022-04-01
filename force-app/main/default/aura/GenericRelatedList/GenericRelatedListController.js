@@ -51,7 +51,9 @@
     handleGotoRelatedList: function (component, event, helper) {
         let currentState = component.get("v.childState");
 
-        currentState.relationForeignkeyField ? helper.goToComponent(component, event, currentState) : helper.goToRelatedList(currentState, event);
+        currentState.relationForeignkeyField
+            ? helper.goToComponent(component, event, currentState)
+            : helper.goToRelatedList(currentState, event);
     },
     handleCreateRecord: function (component, event, helper) {
         helper.createRecord(component.get("v.childState"), event);

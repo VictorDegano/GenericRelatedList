@@ -7,7 +7,8 @@
 .localdevserver/
 .history/
 package-lock.json
-
+.pmdCache
+.vim-force.com/
 # Visual Studiocode configuration files
 .vscode/
 

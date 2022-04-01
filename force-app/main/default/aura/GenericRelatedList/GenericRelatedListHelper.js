@@ -24,7 +24,7 @@
                 c__parentRelationshipApiName: currentState.parentRelationshipApiName,
                 c__relationForeignkeyField: currentState.relationForeignkeyField,
                 c__relatedFieldApiName: currentState.relatedFieldApiName
-            },
+            }
         };
         event.preventDefault();
         navigationLink.navigate(pageReference);
