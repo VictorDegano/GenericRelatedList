@@ -60,6 +60,16 @@ window.LightningUtilities = (
                         }
                     }
                 );
+            },
+            fireEvent: function(component, type, name, parameters){
+                const eventGetter = {
+                    "component": (name, component) => { return component.getEvent(name); },
+                    "application": name => { return $A.get(name); }
+                }
+                let event = eventGetter[type.toLowerCase()](name, component);
+
+                event.setParams(parameters);
+                event.fire();
             }
         };
     }

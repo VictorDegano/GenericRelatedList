@@ -1,12 +1,16 @@
 <aura:component>
     <!-- ATTRIBUTES -->
-    <!-- <aura:attribute name="body" type="Boolean" default="Aura.Component" /> -->
+    <aura:attribute name="isCreatable" type="Boolean" default="false" />
+    <aura:attribute name="isUpdatable" type="Boolean" default="false" />
+    <aura:attribute name="isDeletable" type="Boolean" default="false" />
     <aura:attribute name="columns" type="List" default="[]" />
     <aura:attribute name="records" type="List" default="[]" />
 
     <!-- LIBRARIES -->
     <ltng:require scripts="{!$Resource.LightningUtilities}" />
-    <!-- afterScriptsLoaded="{!c.initialize}"/> -->
+
+    <!-- EVENT -->
+    <aura:registerEvent name="tileAction" type="c:TileActionEvent" />
 
     <!-- MARKUP -->
     <!-- {! v.tileBody} -->
@@ -25,63 +29,25 @@
                             </aura:if>
                         </aura:iteration>
                     </lightning:tile>
-                    <!-- <a id="{!record.Id}" href="#" onclick="{!c.handleGoToRecord}"
-                        >{!record.CaseNumber}</a
-                    >
-                    <dl class="slds-dl_horizontal">
-                        <dt class="slds-dl_horizontal__label">
-                            <p class="slds-truncate" title="Motivo">Motivo:</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta">
-                            <p class="slds-truncate" title="{!record.Motivo__c}">{!record.Motivo__c}</p>
-                        </dd>
-                        <dt class="slds-dl_horizontal__label">
-                            <p class="slds-truncate" title="Estado">Estado:</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta">
-                            <p class="slds-truncate" title="{!record.Status}">{!record.Status}</p>
-                        </dd>
-                        <dt class="slds-dl_horizontal__label">
-                            <p class="slds-truncate" title="Fecha">Fecha:</p>
-                        </dt>
-                        <dd class="slds-dl_horizontal__detail slds-tile__meta">
-                            <p class="slds-truncate" title="{!record.CreatedDate}">
-                                <lightning:formattedDateTime
-                                    value="{!record.CreatedDate}"
-                                    year="numeric"
-                                    month="numeric"
-                                    day="numeric"
-                                    hour="2-digit"
-                                    minute="2-digit"
-                                    hour12="false"
-                                />
-                            </p>
-                        </dd>
-                    </dl> -->
                 </lightning:layoutItem>
                 <lightning:layoutItem size="1">
-                    <!-- <lightning:buttonMenu
+                    <lightning:buttonMenu
                         iconSize="x-small"
                         menuAlignment="right"
-                        disabled="{! !or(v.privateState.isDeletable,v.privateState.isUpdatable) }"
-                        value="{! record}"
+                        disabled="{! !or(v.isDeletable,v.isUpdatable) }"
+                        value="{! record }"
                         alternativeText="Show menu"
                         class="slds-button_last"
                         onselect="{! c.handleTileAction }"
                     >
+                        <lightning:menuItem disabled="{! !v.isUpdatable}" value="edit" title="Edit" label="Edit" />
                         <lightning:menuItem
-                            disabled="{! !v.privateState.isUpdatable}"
-                            value="edit"
-                            title="Edit"
-                            label="Edit"
-                        />
-                        <lightning:menuItem
-                            disabled="{! !v.privateState.isDeletable}"
+                            disabled="{! !v.isDeletable}"
                             value="delete"
                             title="Delete"
                             label="Delete"
                         />
-                    </lightning:buttonMenu> -->
+                    </lightning:buttonMenu>
                 </lightning:layoutItem>
             </lightning:layout>
         </aura:iteration>

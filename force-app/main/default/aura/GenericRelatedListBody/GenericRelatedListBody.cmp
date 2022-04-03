@@ -43,6 +43,7 @@
     <!-- HANDLER -->
     <aura:handler name="change" value="{!v.privateState.columns}" action="{! c.handleColumnsChange }" />
     <aura:handler event="force:showToast" action="{!c.handleToastEvent}" />
+    <aura:handler name="tileAction" event="c:TileActionEvent" action="{!c.handleRowAction}" />
 
     <!-- EVENTS-->
     <aura:registerEvent name="fetchDataEvent" type="c:GenericRelatedListFetchDataEvent" />
@@ -68,7 +69,13 @@
                         resizeColumnDisabled="true"
                     />
                     <aura:set attribute="else">
-                        <c:TilesPanel columns="{! v.state.columns }" records="{! v.privateState.records }" />
+                        <c:TilesPanel
+                            columns="{! v.state.columns }"
+                            records="{! v.privateState.records }"
+                            isCreatable="{! v.privateState.isCreatable }"
+                            isDeletable="{! v.privateState.isDeletable }"
+                            isUpdatable="{! v.privateState.isUpdatable }"
+                        />
                     </aura:set>
                 </aura:if>
 

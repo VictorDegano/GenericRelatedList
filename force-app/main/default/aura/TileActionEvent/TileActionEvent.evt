@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT"
+            description="Event To Pass Data Action from TilePanel">
+    <aura:attribute name="action" type="String" />
+    <aura:attribute name="row" type="Object" />
+</aura:event>
