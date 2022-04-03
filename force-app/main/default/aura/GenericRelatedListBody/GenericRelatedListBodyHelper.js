@@ -64,8 +64,7 @@
 
         this.initColumnsWithActions(component);
 
-        let componentEvent = component.getEvent("fetchDataEvent");
-        componentEvent.setParams({
+        LightningUtilities.fireEvent(component, "component", "fetchDataEvent", {
             eventData: {
                 tableTitle: data.sObjectLabelPlural,
                 numberOfRecordsForTitle: numberOfRecordsTitle,
@@ -74,7 +73,6 @@
                 hasRecords: hasRecords
             }
         });
-        componentEvent.fire();
     },
     processRetrievedRecord: function (record, sObjectLabel) {
         record.LinkName = "/" + record.Id;
@@ -160,11 +158,7 @@
         console.log(errorMessage);
     },
     editRecord: function (component, row) {
-        let createRecordEvent = $A.get("e.force:editRecord");
-        createRecordEvent.setParams({
-            recordId: row.Id
-        });
-        createRecordEvent.fire();
+        LightningUtilities.fireEvent(component, "application", "e.force:editRecord", { recordId: row.Id });
     },
     fireAction: function (component, actionName, row) {
         switch (actionName.toLowerCase()) {

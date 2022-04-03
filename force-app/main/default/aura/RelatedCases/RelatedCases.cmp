@@ -14,7 +14,7 @@
             sobjectApiName: 'Case',
             customActions: [],
             tableTitle: 'Other Cases',
-            tileFormat: true,
+            tileFormat: false,
             iconName: 'standard:case',
             sortedBy: 'CreatedDate, Status',
             columns: [],

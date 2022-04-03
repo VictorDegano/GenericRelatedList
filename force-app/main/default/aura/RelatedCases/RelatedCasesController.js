@@ -34,7 +34,7 @@
             },
             {
                 label: "Account",
-                fieldName: "LinkName",
+                fieldName: "Account_LinkName",
                 type: "url",
                 typeAttributes: {
                     label: { fieldName: "Account_Id" },
