@@ -9,7 +9,6 @@
     <ltng:require scripts="{!$Resource.LightningUtilities}" afterScriptsLoaded="{!c.initialize}" />
 
     <!-- MARKUP -->
-    <!-- <p> -->
     <dl class="slds-dl_horizontal">
         <dt class="slds-dl_horizontal__label">
             <p class="slds-truncate" title="{! v.column.label}">{! v.column.label}:</p>
@@ -33,14 +32,14 @@
 
                 <aura:if isTrue="{! or(v.column.type == 'Url',v.column.type == 'url')}">
                     <lightning:formattedUrl
+                        tooltip="{! v.fieldLabel}"
+                        title="{! v.fieldLabel}"
+                        label="{! v.fieldLabel}"
                         value="{! v.fieldValue}"
-                        label="{! v.labelValue}"
-                        tooltip="{! v.labelValue}"
                         target="{! v.column.typeAttributes.target}"
                     />
                 </aura:if>
             </p>
         </dd>
     </dl>
-    <!-- </p> -->
 </aura:component>
